@@ -2,10 +2,11 @@ function Get-IPAddresses {
 <#
 .SYNOPSIS
     Gets all of the IPv4 addresses associated with the device this script is run on.
+
 .DESCRIPTION
     Gets all of the IPv4 addresses associated with the device this script is run on.
 
-    gia is an alias of this.
+    Aliases: gia
 .OUTPUTS
     System.Net.IPAddress[]
 .NOTES
