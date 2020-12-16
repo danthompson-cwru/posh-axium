@@ -2,9 +2,13 @@
 The axiUm module provides functions for doing things related to axiUm.
 
 # Prerequisites
+
+## All Functions
 * A Windows OS.
 * PowerShell version 5.1 or latter. This comes with Windows 10 and Windows Server 2016. You can download it for previous versions of Windows.
-* RoboCopy in the path. This is done out of the box with Windows Vista and latter and Windows Server 2008 and latter. It can be downloaded for previous verions of Windows.
+
+## `Copy-AxiumFiles`
+For `Copy-AxiumFiles` to work, RoboCopy must be present in the path. This is done out of the box with Windows Vista and latter and Windows Server 2008 and latter. It can be downloaded for previous verions of Windows.
 
 # Installation
 
