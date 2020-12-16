@@ -1,28 +1,29 @@
 function Get-IPAddresses {
-<#
-.SYNOPSIS
-    Gets all of the IPv4 addresses associated with the device this script is run on.
+    <#
+        .SYNOPSIS
+            Gets all of the IPv4 addresses associated with the device this script is run on.
 
-.DESCRIPTION
-    Gets all of the IPv4 addresses associated with the device this script is run on.
+        .DESCRIPTION
+            Gets all of the IPv4 addresses associated with the device this script is run on.
 
-    Aliases: gia
-.OUTPUTS
-    System.Net.IPAddress[]
-.NOTES
-    Author    : Dan Thompson
-    Copyright : 2020 Case Western Reserve University
-#>
+            Aliases: gia
 
-[CmdletBinding()]
+        .OUTPUTS
+            System.Net.IPAddress[]
 
-[OutputType([System.Net.IPAddress[]])]
+        .NOTES
+            Author    : Dan Thompson
+            Copyright : 2020 Case Western Reserve University
+    #>
 
-param()
+    [CmdletBinding()]
+    [OutputType([System.Net.IPAddress[]])]
 
-begin{
-    return Get-NetIPAddress -AddressFamily 'IPv4' | Select-Object -ExpandProperty IPAddress
-}
+    param()
+
+    begin {
+        Get-NetIPAddress -AddressFamily 'IPv4' | Select-Object -ExpandProperty IPAddress
+    }
 }
 
 New-Alias -Name 'gia' -Value 'Get-IPAddresses'
