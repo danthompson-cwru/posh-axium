@@ -1,69 +1,75 @@
 function Test-IPAddressInSubnet {
-<#
-.SYNOPSIS
-    Tests membership of a IPv4 address in a given subnet.
-.DESCRIPTION
-    Tests membership of a IPv4 address in a given subnet.
+    <#
+        .SYNOPSIS
+            Tests membership of a IPv4 address in a given subnet.
 
-    tias is an alias of this.
-.PARAMETER IPAddress
-    The IPv4 address to check. This can be passed from the pipeline. On the pipeline,
-    this can be a collection of IP addresses.
-.PARAMETER SubnetAddress
-    The subnet address.
-.PARAMETER SubnetMask
-    The subnet mask.
-.INPUTS
-    System.Net.IPAddress
-.OUTPUTS
-    System.Boolean
-.NOTES
-    Author    : Dan Thompson
-    Copyright : 2020 Case Western Reserve University
-#>
+        .DESCRIPTION
+            Tests membership of a IPv4 address in a given subnet.
 
-[CmdletBinding()]
+            Aliases: tias
 
-[OutputType([System.Boolean])]
+        .INPUTS
+            System.Net.IPAddress
 
-param(
-    [Parameter(
-        Position = 0,
-        ValueFromPipeline = $True,
-        ValueFromPipelineByPropertyName = $True,
-        Mandatory = $True
-    )]
-    [ValidateNotNullOrEmpty()]
-    [Alias('ip_addr', 'ip')]
-    [System.Net.IPAddress]$IPAddress,
+        .OUTPUTS
+            System.Boolean
 
-    [Parameter(Mandatory = $True)]
-    [ValidateNotNullOrEmpty()]
-    [Alias('snet_addr')]
-    [System.Net.IPAddress]$SubnetAddress,
-    
-    [Parameter(Mandatory = $True)]
-    [ValidateNotNullOrEmpty()]
-    [Alias('snet_mask')]
-    [System.Net.IPAddress]$SubnetMask
-)
+        .NOTES
+            Author    : Dan Thompson
+            Copyright : 2020 Case Western Reserve University
+    #>
 
-process {
-    Write-Verbose -Message "Testing address $($IPAddress.ToString()) for membership in $($SubnetAddress.ToString())/$($SubnetMask.ToString()) ..."
+    [CmdletBinding()]
+    [OutputType([System.Boolean])]
 
-    $InSubnet = $SubnetAddress.Address -eq ($IPAddress.Address -band $SubnetMask.Address)
+    param(
+        # The IPv4 address to check. This can be passed from the pipeline. On the pipeline,
+        # this can be a collection of IP addresses.
+        #
+        # Aliases: ip_addr, ip
+        [Parameter(
+            Position = 0,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Mandatory = $True
+        )]
+        [ValidateNotNullOrEmpty()]
+        [Alias('ip_addr', 'ip')]
+        [System.Net.IPAddress]$IPAddress,
 
-    $ResultVerboseMessage = "$($IPAddress.ToString()) "
-    if ($InSubnet) {
-        $ResultVerboseMessage += 'is in'
-    } else {
-        $ResultVerboseMessage += 'is not in'
+        # The subnet address.
+        #
+        # Aliases: snet_addr
+        [Parameter(Mandatory = $True)]
+        [ValidateNotNullOrEmpty()]
+        [Alias('snet_addr')]
+        [System.Net.IPAddress]$SubnetAddress,
+        
+        # The subnet mask.
+        #
+        # Aliases: snet_mask
+        [Parameter(Mandatory = $True)]
+        [ValidateNotNullOrEmpty()]
+        [Alias('snet_mask')]
+        [System.Net.IPAddress]$SubnetMask
+    )
+
+    process {
+        Write-Verbose -Message "Testing address $($IPAddress.ToString()) for membership in $($SubnetAddress.ToString())/$($SubnetMask.ToString()) ..."
+
+        $InSubnet = $SubnetAddress.Address -eq ($IPAddress.Address -band $SubnetMask.Address)
+
+        $ResultVerboseMessage = "$($IPAddress.ToString()) "
+        if ($InSubnet) {
+            $ResultVerboseMessage += 'is in'
+        } else {
+            $ResultVerboseMessage += 'is not in'
+        }
+        $ResultVerboseMessage += " $($SubnetAddress.ToString())/$($SubnetMask.ToString())."
+        Write-Verbose -Message $ResultVerboseMessage
+
+        return $InSubnet
     }
-    $ResultVerboseMessage += " $($SubnetAddress.ToString())/$($SubnetMask.ToString())."
-    Write-Verbose -Message $ResultVerboseMessage
-
-    return $InSubnet
-}
 }
 
 New-Alias -Name 'tias' -Value 'Test-IPAddressInSubnet'
