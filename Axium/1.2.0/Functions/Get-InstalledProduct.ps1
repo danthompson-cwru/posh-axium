@@ -14,6 +14,10 @@ function Get-InstalledProduct {
 
         .OUTPUTS
             System.Object[]
+
+        .NOTES
+            Author    : Dan Thompson
+            Copyright : 2020 Case Western Reserve University
     #>
 
     [CmdletBinding()]
