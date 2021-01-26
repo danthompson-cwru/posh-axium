@@ -68,7 +68,7 @@ function Install-MSI {
         })]
         [string]$RestartBehavior = 'Default',
 
-        # The directory to place MSI log files in. Each MSI specified via either $MsiPath or the pipe will log
+        # The directory to place MSI log files in. Each MSI specified via either $MSIFilePath or the pipe will log
         # to a file named after the MSI in this directory.
         #
         # See https://docs.microsoft.com/en-us/windows/win32/msi/standard-installer-command-line-options for what
