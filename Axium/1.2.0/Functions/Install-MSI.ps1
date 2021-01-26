@@ -35,9 +35,7 @@ function Install-MSI {
         )]
         [Alias('p', 'msi')]
         [ValidateNotNullOrEmpty()]
-        [ValidateScript({
-            Test-Path -Path $_ -PathType 'Leaf'
-        })]
+        [ValidateScript({ Test-Path -Path $_ -PathType 'Leaf' })]
         [System.IO.FileInfo]$MSIFilePath,
 
         # What to display on the screen. Must be one of the following:
@@ -76,6 +74,7 @@ function Install-MSI {
         #
         # Aliases: l, log
         [Alias('l', 'log')]
+        [ValidateNotNullOrEmpty()]
         [System.IO.DirectoryInfo]$LogDirectoryPath
     )
 
