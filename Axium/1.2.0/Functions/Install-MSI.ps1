@@ -35,7 +35,7 @@ function Install-MSI {
         )]
         [Alias('p', 'msi')]
         [ValidateNotNullOrEmpty()]
-        [ValidateScript({ Test-Path -Path $_ -PathType 'Leaf' })]
+        [ValidateScript({ $_ | Test-Path -PathType 'Leaf' })]
         [System.IO.FileInfo]$MSIFilePath,
 
         # What to display on the screen. Must be one of the following:
