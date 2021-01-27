@@ -76,7 +76,14 @@ function Install-MSI {
         [Alias('l', 'log')]
         [ValidateNotNullOrEmpty()]
         [ValidateScript({ $_ | Test-Path -PathType 'Container' })]
-        [System.IO.DirectoryInfo]$LogDirectoryPath
+        [System.IO.DirectoryInfo]$LogDirectoryPath,
+
+        # By default, this function will consider it to be an error if the product in $MSIFilePath is already
+        # installed. This changes things so it is no longer considered an error.
+        #
+        # Aliases: soe
+        [Alias('soe')]
+        [switch]$SuccessOnExists
     )
 
     begin {
@@ -147,71 +154,98 @@ function Install-MSI {
     }
 
     process {
-        # Create the (currently empty) log file if needed. (MSIEXEC won't write to a log file that doesn't exist.)
+        # Determine if this MSI is already installed.
 
-        [System.IO.FileInfo]$LogFilePath = $Null
-        $LogFileExists = $False
+        $MSIProperties = $MSIFilePath | Get-MSIProperties
 
-        if ($LogDirectoryExists) {
-            $LogFilePath = Join-Path -Path $LogDirectoryPath -ChildPath "$($MSIFilePath.BaseName).log"
+        Write-Verbose -Message """$($MSIFilePath.FullName)"" has the following properties:"
+        Write-Verbose -Message "`tProductName: $($MSIProperties.ProductName)"
+        Write-Verbose -Message "`tProductVersion: $($MSIProperties.ProductVersion)"
 
-            $LogMessageSuffix = "for `"$($MSIFilePath.FullName)`"."
-            $LogVerboseMessageSuffix = "Logging $LogMessageSuffix."
-            $LogErrorMessageSuffix = "Not logging $LogMessageSuffix."
+        $InstalledProperties = Get-InstalledProduct | Where-Object {
+            $_.DisplayName -eq $MSIProperties.ProductName -and
+            $_.DisplayVersion -eq $MSIProperties.ProductVersion
+        }
 
-            if (Test-Path -Path $LogFilePath) {
-                if (-not (Test-Path -Path $LogFilePath -PathType 'Leaf')) {
-                    Write-Error -Message "`"$($LogFilePath.FullName)`" is not a file. $LogErrorMessageSuffix"
+        if ($Null -eq $InstalledProperties) {
+            Write-Verbose -Message 'Product is not installed. Continuing with install ...'
+
+            # Create the (currently empty) log file if needed. (MSIEXEC won't write to a log file that doesn't exist.)
+
+            [System.IO.FileInfo]$LogFilePath = $Null
+            $LogFileExists = $False
+
+            if ($LogDirectoryExists) {
+                $LogFilePath = Join-Path -Path $LogDirectoryPath -ChildPath "$($MSIFilePath.BaseName).log"
+
+                $LogMessageSuffix = "for `"$($MSIFilePath.FullName)`"."
+                $LogVerboseMessageSuffix = "Logging $LogMessageSuffix."
+                $LogErrorMessageSuffix = "Not logging $LogMessageSuffix."
+
+                if (Test-Path -Path $LogFilePath) {
+                    if (-not (Test-Path -Path $LogFilePath -PathType 'Leaf')) {
+                        Write-Error -Message "`"$($LogFilePath.FullName)`" is not a file. $LogErrorMessageSuffix"
+                    } else {
+                        Write-Verbose -Message "`"$($LogFilePath.FullName)`" exists and is a file. $LogVerboseMessageSuffix"
+
+                        $LogFileExists = $True
+                    }
                 } else {
-                    Write-Verbose -Message "`"$($LogFilePath.FullName)`" exists and is a file. $LogVerboseMessageSuffix"
+                    Write-Verbose "`"$($LogFilePath.FullName)`" doesn't exist. Attempting to create it ..."
 
-                    $LogFileExists = $True
-                }
-            } else {
-                Write-Verbose "`"$($LogFilePath.FullName)`" doesn't exist. Attempting to create it ..."
+                    if ($Null -eq (New-Item -Path $LogFilePath -ItemType 'File')) {
+                        Write-Error -Message "Unable to create `"$($LogFilePath.FullName)`". $LogErrorMessageSuffix"
+                    } else {
+                        Write-Verbose -Message "Successfully created `"$($LogFilePath.FullName)`". $LogVerboseMessageSuffix"
 
-                if ($Null -eq (New-Item -Path $LogFilePath -ItemType 'File')) {
-                    Write-Error -Message "Unable to create `"$($LogFilePath.FullName)`". $LogErrorMessageSuffix"
-                } else {
-                    Write-Verbose -Message "Successfully created `"$($LogFilePath.FullName)`". $LogVerboseMessageSuffix"
-
-                    $LogFileExists = $True
+                        $LogFileExists = $True
+                    }
                 }
             }
-        }
 
-        # Install the MSI.
+            # Install the MSI.
 
-        $ArgumentList = @("/package `"$($MSIFilePath.FullName)`"")
+            $ArgumentList = @("/package `"$($MSIFilePath.FullName)`"")
 
-        if ($Null -ne $DisplayModeArgument) {
-            $ArgumentList += $DisplayModeArgument
-        }
+            if ($Null -ne $DisplayModeArgument) {
+                $ArgumentList += $DisplayModeArgument
+            }
 
-        if ($Null -ne $RestartBehaviorArgument) {
-            $ArgumentList += $RestartBehaviorArgument
-        }
+            if ($Null -ne $RestartBehaviorArgument) {
+                $ArgumentList += $RestartBehaviorArgument
+            }
 
-        if ($LogFileExists) {
-            $ArgumentList += "/log `"$($LogFilePath.FullName)`""
-        }
+            if ($LogFileExists) {
+                $ArgumentList += "/log `"$($LogFilePath.FullName)`""
+            }
 
-        if ($PSCmdlet.ShouldProcess($MSIExec.Source, 'Start-Process')) {
-            $RunMessageSuffix = "$($MSIExec.Source[0]) $ArgumentList"
+            if ($PSCmdlet.ShouldProcess($MSIExec.Source, 'Start-Process')) {
+                $RunMessageSuffix = "$($MSIExec.Source[0]) $ArgumentList"
 
-            Write-Verbose -Message "Attempting to run: $RunMessageSuffix"
+                Write-Verbose -Message "Attempting to run: $RunMessageSuffix"
 
-            $MSIExecProcess = Start-Process -FilePath $MSIExec.Source[0] -ArgumentList $ArgumentList -Wait -PassThru
+                $MSIExecProcess = Start-Process -FilePath $MSIExec.Source[0] -ArgumentList $ArgumentList -Wait -PassThru
 
-            if ($MSIExecProcess.ExitCode -eq 0) {
-                Write-Verbose -Message "Successfully ran: $RunMessageSuffix"
-                $True
+                if ($MSIExecProcess.ExitCode -eq 0) {
+                    Write-Verbose -Message "Successfully ran: $RunMessageSuffix"
+                    $True
+                } else {
+                    throw "Encountered error code $($MSIExecProcess.ExitCode) when running: $RunMessageSuffix"
+                    $False
+                }
             } else {
-                throw "Encountered error code $($MSIExecProcess.ExitCode) when running: $RunMessageSuffix"
-                $False
+                $True
             }
         } else {
-            $True
+            $ExistsMessage = "The product in $($MSIFilePath.FullName) is already installed. Not installing."
+            
+            if ($SuccessOnExists.IsPresent) {
+                Write-Verbose -Message $ExistsMessage
+                $True
+            } else {
+                Write-Error -Message $ExistsMessage
+                $False
+            }
         }
     }
 }
