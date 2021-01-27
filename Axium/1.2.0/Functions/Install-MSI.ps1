@@ -75,6 +75,7 @@ function Install-MSI {
         # Aliases: l, log
         [Alias('l', 'log')]
         [ValidateNotNullOrEmpty()]
+        [ValidateScript({ $_ | Test-Path -PathType 'Container' })]
         [System.IO.DirectoryInfo]$LogDirectoryPath
     )
 
