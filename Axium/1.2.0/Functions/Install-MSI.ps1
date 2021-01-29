@@ -219,12 +219,12 @@ function Install-MSI {
                 $ArgumentList += "/log `"$($LogFilePath.FullName)`""
             }
 
-            if ($PSCmdlet.ShouldProcess($MSIExec.Source, 'Start-Process')) {
-                $RunMessageSuffix = "$($MSIExec.Source[0]) $ArgumentList"
+            if ($PSCmdlet.ShouldProcess('msiexec', 'Start-Process')) {
+                $RunMessageSuffix = "msiexec $ArgumentList"
 
                 Write-Verbose -Message "Attempting to run: $RunMessageSuffix"
 
-                $MSIExecProcess = Start-Process -FilePath $MSIExec.Source[0] -ArgumentList $ArgumentList -Wait -PassThru
+                $MSIExecProcess = Start-Process -FilePath 'msiexec' -ArgumentList $ArgumentList -Wait -PassThru
 
                 if ($MSIExecProcess.ExitCode -eq 0) {
                     Write-Verbose -Message "Successfully ran: $RunMessageSuffix"
