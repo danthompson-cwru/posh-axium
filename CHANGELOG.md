@@ -11,3 +11,12 @@
 * Cleaned up formatting to be (hopefully) compliant with the standards published at https://poshcode.gitbooks.io/powershell-practice-and-style/content.
 * Added the [release notes](CHANGELOG.md) to the module manifest.
 * Added a [project icon](Icon.svg).
+
+# Version 1.2.0
+* Added the following functions, which resolve issue #3:
+  - `Get-InstalledProduct`
+  - `Get-MSIProperties`
+  - `Install-MSI`
+  - `Install-AxiumWorkstation`
+  - `Write-AxiumFix`
+* Cleaned up code style.
