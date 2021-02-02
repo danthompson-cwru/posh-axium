@@ -9,7 +9,7 @@ function Get-MSIProperties {
             Aliases: gmp
 
         .INPUTS
-            System.IO.FileInfo
+            string
 
         .OUTPUTS
             hashtable
@@ -35,7 +35,7 @@ function Get-MSIProperties {
         [Alias('p')]
         [ValidateNotNullOrEmpty()]
         [ValidateScript({ $_ | Test-Path -PathType 'Leaf' })]
-        [System.IO.FileInfo]$Path
+        [string]$Path
     )
 
     begin {
@@ -51,7 +51,7 @@ function Get-MSIProperties {
                 'InvokeMethod',
                 $Null,
                 $Com,
-                @($Path.FullName, 0)
+                @($Path, 0)
             )
 
             $Query = 'SELECT * FROM Property'
@@ -108,7 +108,7 @@ function Get-MSIProperties {
                 )
             }
         } catch {
-            throw "Failed to get the properties of the MSI at $($Path.FullName). The error was: $_"
+            throw "Failed to get the properties of the MSI at $Path. The error was: $_"
         }
 
         $Properties

@@ -8,7 +8,7 @@ function Write-AxiumFix {
             verions less than 7.06 work with Crystal Reports Runtime 13 SP26.
 
         .INPUTS
-            System.IO.DirectoryInfo
+            string
 
         .OUTPUTS
             System.Boolean
@@ -41,7 +41,7 @@ function Write-AxiumFix {
             ($_ | Join-Path -ChildPath 'axiUm.exe.Config' | Test-Path -PathType 'Leaf')
         })]
         [Alias('p')]
-        [System.IO.DirectoryInfo]$Path,
+        [string]$Path,
 
         # The fix to apply. Must be one of the following:
         #

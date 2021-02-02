@@ -13,7 +13,7 @@ function Set-AxiumHelpLink {
             Aliases: sahl
 
         .INPUTS
-            System.IO.DirectoryInfo
+            string
 
         .OUTPUTS
             System.IO.DirectoryInfo
@@ -73,12 +73,12 @@ function Set-AxiumHelpLink {
         [ValidateNotNullOrEmpty()]
         [ValidateScript({
             if (-not ($_ | Test-Path)) {
-                throw "$($_.FullName) doesn't exist."
+                throw "Directory $_ doesn't exist."
             }
 
             return $True
         })]
-        [System.IO.DirectoryInfo]$ClientPath,
+        [string]$ClientPath,
 
         # If MultipleCopies is set, the name of the last folder in ClientPath will be appended to HelpPathOrPrefix
         # to get where the help files are stored.
@@ -146,7 +146,7 @@ function Set-AxiumHelpLink {
     process {
         # Get the actual help files path. This will be different from $HelpPathOrPrefix if we have multiple copies
         # of axiUm.
-        [System.IO.DirectoryInfo]$HelpPath = $HelpPathOrPrefix
+        $HelpPath = $HelpPathOrPrefix
         if ($MultipleCopies.IsPresent) {
             $HelpPath = $HelpPathOrPrefix + $(Split-Path -Path $ClientPath -Leaf)
         }
@@ -159,17 +159,17 @@ function Set-AxiumHelpLink {
 
         if ($HaveHelpFiles) {
             # We do, so we are good to create the link.
-            Write-Verbose -Message "$($HelpPath.FullName) exists, so creating link ..."
+            Write-Verbose -Message "$HelpPath exists, so creating link ..."
 
             # Set the path to the link before we make any changes.
-            [System.IO.DirectoryInfo]$LinkPath = Join-Path -Path $ClientPath.FullName -ChildPath 'axiUm Help Files'
+            $LinkPath = Join-Path -Path $ClientPath -ChildPath 'axiUm Help Files'
 
             # Make the link if we meet the requirements.
             if ($CanMakeLink) {
                 # Check if ClientPath actually contains an installation of axiUm.
-                [System.IO.FileInfo]$AxiumExePath = Join-Path -Path $ClientPath.FullName -ChildPath 'axiUm.exe'
-                if (Test-Path -Path $AxiumExePath.FullName -PathType 'Leaf') {
-                    Write-Verbose -Message "$($AxiumExePath.FullName) exists, so we have a copy of axiUm."
+                $AxiumExePath = Join-Path -Path $ClientPath -ChildPath 'axiUm.exe'
+                if (Test-Path -Path $AxiumExePath -PathType 'Leaf') {
+                    Write-Verbose -Message "$AxiumExePath exists, so we have a copy of axiUm."
 
                     # If the help files is already a plain, local directory, we need to recursivley delete it.
                     if ((Test-Path -Path $LinkPath -PathType 'Container') -and
@@ -195,11 +195,11 @@ function Set-AxiumHelpLink {
                         }
                     }
                 } else {
-                    Write-Warning -Message "$($AxiumExePath.FullName) doesn't exist, so we don't have a copy of axiUm. Not creating link."
+                    Write-Warning -Message "$AxiumExePath doesn't exist, so we don't have a copy of axiUm. Not creating link."
                 }
             }
         } else {
-            Write-Warning -Message "$($HelpPath.FullName) doesn't exist, or is not a directory. Not creating link."
+            Write-Warning -Message "$HelpPath doesn't exist, or is not a directory. Not creating link."
         }
 
         return $Link

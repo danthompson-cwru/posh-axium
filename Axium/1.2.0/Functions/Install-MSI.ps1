@@ -10,7 +10,7 @@ function Install-MSI {
             Aliases: ismsi
 
         .INPUTS
-            System.IO.FileInfo
+            string
 
         .OUTPUTS
             System.Boolean
@@ -36,7 +36,7 @@ function Install-MSI {
         [Alias('p', 'msi')]
         [ValidateNotNullOrEmpty()]
         [ValidateScript({ $_ | Test-Path -PathType 'Leaf' })]
-        [System.IO.FileInfo]$MSIFilePath,
+        [string]$MSIFilePath,
 
         # What to display on the screen. Must be one of the following:
         # - Full (Regular, full UI is shown on screen, just as if the user double-clicked the MSI.)
@@ -76,7 +76,7 @@ function Install-MSI {
         [Alias('l', 'log')]
         [ValidateNotNullOrEmpty()]
         [ValidateScript({ $_ | Test-Path -PathType 'Container' })]
-        [System.IO.DirectoryInfo]$LogDirectoryPath,
+        [string]$LogDirectoryPath,
 
         # By default, this function will consider it to be an error if the product in $MSIFilePath is already
         # installed. This changes things so it is no longer considered an error.
@@ -102,16 +102,16 @@ function Install-MSI {
             Write-Verbose -Message 'MSI logging not enabled.'
         } else {
             if (Test-Path -Path $LogDirectoryPath) {
-                Write-Verbose -Message "`"$($LogDirectoryPath.FullName)`" already exists, so not creating it."
+                Write-Verbose -Message """$LogDirectoryPath"" already exists, so not creating it."
 
                 $LogDirectoryExists = $True
             } else {
-                Write-Verbose -Message "`"$($LogDirectoryPath.FullName)`" doesn't exist, so creating it ..."
+                Write-Verbose -Message """$LogDirectoryPath"" doesn't exist, so creating it ..."
 
                 if ($Null -eq (New-Item -Path $LogDirectoryPath -ItemType 'Directory')) {
-                    Write-Error -Message "Failed to create `"$($LogDirectoryPath.FullName)`". MSI logging will not be done."
+                    Write-Error -Message "Failed to create ""$LogDirectoryPath"". MSI logging will not be done."
                 } else {
-                    Write-Verbose -Message "Successfully created `"$($LogDirectoryPath.FullName)`"."
+                    Write-Verbose -Message "Successfully created ""$LogDirectoryPath""."
 
                     $LogDirectoryExists = $True
                 }
@@ -158,7 +158,7 @@ function Install-MSI {
 
         $MSIProperties = $MSIFilePath | Get-MSIProperties
 
-        Write-Verbose -Message """$($MSIFilePath.FullName)"" has the following properties:"
+        Write-Verbose -Message """$MSIFilePath"" has the following properties:"
         Write-Verbose -Message "`tProductName: $($MSIProperties.ProductName)"
         Write-Verbose -Message "`tProductVersion: $($MSIProperties.ProductVersion)"
 
@@ -172,31 +172,31 @@ function Install-MSI {
 
             # Create the (currently empty) log file if needed. (MSIEXEC won't write to a log file that doesn't exist.)
 
-            [System.IO.FileInfo]$LogFilePath = $Null
+            $LogFilePath = $Null
             $LogFileExists = $False
 
             if ($LogDirectoryExists) {
                 $LogFilePath = Join-Path -Path $LogDirectoryPath -ChildPath "$($MSIFilePath.BaseName).log"
 
-                $LogMessageSuffix = "for `"$($MSIFilePath.FullName)`"."
+                $LogMessageSuffix = "for ""$MSIFilePath""."
                 $LogVerboseMessageSuffix = "Logging $LogMessageSuffix."
                 $LogErrorMessageSuffix = "Not logging $LogMessageSuffix."
 
                 if (Test-Path -Path $LogFilePath) {
                     if (-not (Test-Path -Path $LogFilePath -PathType 'Leaf')) {
-                        Write-Error -Message "`"$($LogFilePath.FullName)`" is not a file. $LogErrorMessageSuffix"
+                        Write-Error -Message """$LogFilePath"" is not a file. $LogErrorMessageSuffix"
                     } else {
-                        Write-Verbose -Message "`"$($LogFilePath.FullName)`" exists and is a file. $LogVerboseMessageSuffix"
+                        Write-Verbose -Message """$LogFilePath"" exists and is a file. $LogVerboseMessageSuffix"
 
                         $LogFileExists = $True
                     }
                 } else {
-                    Write-Verbose "`"$($LogFilePath.FullName)`" doesn't exist. Attempting to create it ..."
+                    Write-Verbose """$LogFilePath"" doesn't exist. Attempting to create it ..."
 
                     if ($Null -eq (New-Item -Path $LogFilePath -ItemType 'File')) {
-                        Write-Error -Message "Unable to create `"$($LogFilePath.FullName)`". $LogErrorMessageSuffix"
+                        Write-Error -Message "Unable to create ""$LogFilePath"". $LogErrorMessageSuffix"
                     } else {
-                        Write-Verbose -Message "Successfully created `"$($LogFilePath.FullName)`". $LogVerboseMessageSuffix"
+                        Write-Verbose -Message "Successfully created ""$LogFilePath"". $LogVerboseMessageSuffix"
 
                         $LogFileExists = $True
                     }
@@ -205,7 +205,7 @@ function Install-MSI {
 
             # Install the MSI.
 
-            $ArgumentList = @("/package `"$($MSIFilePath.FullName)`"")
+            $ArgumentList = @("/package ""$MSIFilePath""")
 
             if ($Null -ne $DisplayModeArgument) {
                 $ArgumentList += $DisplayModeArgument
@@ -216,7 +216,7 @@ function Install-MSI {
             }
 
             if ($LogFileExists) {
-                $ArgumentList += "/log `"$($LogFilePath.FullName)`""
+                $ArgumentList += "/log ""$LogFilePath"""
             }
 
             if ($PSCmdlet.ShouldProcess('msiexec', 'Start-Process')) {
@@ -237,7 +237,7 @@ function Install-MSI {
                 $True
             }
         } else {
-            $ExistsMessage = "The product in $($MSIFilePath.FullName) is already installed. Not installing."
+            $ExistsMessage = "The product in $MSIFilePath is already installed. Not installing."
             
             if ($SuccessOnExists.IsPresent) {
                 Write-Verbose -Message $ExistsMessage

@@ -15,7 +15,7 @@ function Copy-AxiumFiles {
             Aliases: cpaf
 
         .INPUTS
-            System.IO.DirectoryInfo
+            string
 
         .EXAMPLE
             PS> Copy-AxiumFiles -ClientPath 'C:\axiUm' -SourcePathOrPrefix $PSScriptRoot
@@ -70,14 +70,14 @@ function Copy-AxiumFiles {
         )]
         [ValidateNotNullOrEmpty()]
         [ValidateScript({
-            if (-not ($_ | Test-Path)) {
-                throw "$($_.FullName) doesn't exist."
+            if (-not ($_ | Test-Path -PathType 'Container')) {
+                throw "Directory $_ doesn't exist."
             }
 
             $True
         })]
         [Alias('clp')]
-        [System.IO.DirectoryInfo]$ClientPath,
+        [string]$ClientPath,
 
         # If MultipleCopies is set, the name of the last folder in ClientPath will be appended to
         # SourcePathOrPrefix to get where to copy files from. Otherwise, SourcePathOrPrefix will be treated as the
@@ -164,7 +164,7 @@ function Copy-AxiumFiles {
         if ($CanCopy) {
             # Get the actual source path. This will be different from $SourcePathOrPrefix if we have multiple copies
             # of axiUm.
-            [System.IO.DirectoryInfo]$SourcePath = $SourcePathOrPrefix
+            $SourcePath = $SourcePathOrPrefix
             if ($MultipleCopies.IsPresent) {
                 $SourcePath = $SourcePathOrPrefix + $(Split-Path -Path $ClientPath -Leaf)
             }
@@ -177,7 +177,7 @@ function Copy-AxiumFiles {
 
             if ($HaveSourceFiles) {
                 # We do, so we are good to copy the files.
-                Write-Verbose -Message "$($SourcePath.FullName) exists, so copying contents to $($ClientPath.FullName) ..."
+                Write-Verbose -Message "$SourcePath exists, so copying contents to $ClientPath ..."
 
                 # Set up some RoboCopy options. We have to do this here as doing it in begin will cause
                 # $RobocopyOptions to not get emptied for each copy of axiUm.
@@ -187,26 +187,26 @@ function Copy-AxiumFiles {
                     $RobocopyOptions += '/XO'
                 }
 
-                [System.IO.FileInfo]$LogPath = Join-Path -Path $ClientPath.FullName -ChildPath 'Copy-AxiumFiles.log'
+                $LogPath = Join-Path -Path $ClientPath -ChildPath 'Copy-AxiumFiles.log'
 
                 $RobocopyLogFlag = '/UNILOG'
                 if ($AppendToLog.IsPresent) {
                     $RobocopyLogFlag += '+'
                 }
-                $RobocopyLogFlag += ":$($LogPath.FullName)"
+                $RobocopyLogFlag += ":$LogPath"
 
                 $RobocopyOptions += $RobocopyLogFlag
 
                 # Call RoboCopy.
 
-                $RobocopyArgs = @($SourcePath.FullName, $ClientPath.FullName) + $RobocopyOptions
+                $RobocopyArgs = @($SourcePath, $ClientPath) + $RobocopyOptions
 
                 if ($PSCmdlet.ShouldProcess("robocopy.exe $RobocopyArgs", 'Run')) {
                     & robocopy.exe $RobocopyArgs
                 }
             } else {
                 # We don't.
-                Write-Warning -Message "$($SourcePath.FullName) doesn't exist, or is not a directory. Not copying contents to $($ClientPath.FullName)."
+                Write-Warning -Message "$SourcePath doesn't exist, or is not a directory. Not copying contents to $ClientPath."
             }
         }
     }

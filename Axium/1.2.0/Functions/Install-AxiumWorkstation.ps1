@@ -15,7 +15,7 @@ function Install-AxiumWorkstation {
             Aliases: Install-AxiumWS, isaws
 
         .INPUTS
-            System.IO.DirectoryInfo
+            string
 
         .OUTPUTS
             System.Boolean
@@ -44,7 +44,7 @@ function Install-AxiumWorkstation {
             ($_ | Test-Path -PathType 'Container') -and
             ($_ | Join-Path -ChildPath 'Setup.exe' | Test-Path -PathType 'Leaf')
         })]
-        [System.IO.DirectoryInfo]$Path
+        [string]$Path
     )
 
     begin {
