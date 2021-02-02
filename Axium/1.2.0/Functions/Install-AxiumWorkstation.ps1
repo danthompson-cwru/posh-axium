@@ -9,6 +9,9 @@ function Install-AxiumWorkstation {
                 - Applying any compatbility fixes.
                 - PowerAdmin (unless you have a custom installer that includes it)
 
+            If the answer file "$Path\Setup.iss" exists, a silent installation will be performed. This can be
+            written to "C:\WINDOWS\Setup.iss" by running "$Path\Setup.exe /r" and going through the installation.
+
             Aliases: Install-AxiumWS, isaws
 
         .INPUTS
@@ -41,15 +44,7 @@ function Install-AxiumWorkstation {
             ($_ | Test-Path -PathType 'Container') -and
             ($_ | Join-Path -ChildPath 'Setup.exe' | Test-Path -PathType 'Leaf')
         })]
-        [System.IO.DirectoryInfo]$Path,
-
-        # Run without any user interaction. To use this, the file "$Path\Setup.iss" must exist. This can be
-        # written to "C:\WINDOWS\Setup.iss" by running "$Path\Setup.exe /r".
-        #
-        # Aliases: Quiet, q, s
-        [Alias('Quiet', 'q', 's')]
-        [ValidateScript({ $Path | Join-Path -ChildPath 'Setup.iss' | Test-Path -PathType 'Setup.iss' })]
-        [switch]$Silent
+        [System.IO.DirectoryInfo]$Path
     )
 
     begin {
@@ -58,13 +53,17 @@ function Install-AxiumWorkstation {
             'NoNewWindow' = $True
             'PassThru' = $True
         }
-
-        if ($Silent.IsPresent) {
-            $StartProcessArgs.ArgumentList = '/s'
-        }
     }
 
     process {
+        $AnswerFilePath = $Path | Join-Path -ChildPath 'Setup.iss'
+        if ($AnswerFilePath | Test-Path -PathType 'Leaf') {
+            Write-Verbose -Message "Answer file found at $AnswerFilePath. Will perform silent install."
+            $StartProcessArgs.ArgumentList = '/s'
+        } else {
+            Write-Verbose -Message "Answer file not found at $AnswerFilePath. Will not perform a silent install."
+        }
+
         $StartProcessArgs.FilePath = $Path | Join-Path -ChildPath 'Setup.exe'
 
         if ($PSCmdlet.ShouldProcess($StartProcessArgs.FilePath, 'Start-Process')) {
