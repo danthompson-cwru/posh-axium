@@ -23,3 +23,4 @@
 * Switched to using `Start-Process` instead of `&` to start `robocopy.exe` in `Copy-AxiumFiles` for the following reasons:
   * Allows for more detailed output on the result of running the command.
   * Is more consistent with how things are done in `Install-MSI`.
+* Added a workflow to automatically publish the module to the PowerShell Gallery when a new release is made.
