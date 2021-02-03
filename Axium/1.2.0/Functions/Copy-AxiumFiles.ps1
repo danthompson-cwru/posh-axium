@@ -171,7 +171,7 @@ function Copy-AxiumFiles {
 
             if ($HaveSourceFiles) {
                 # We do, so we are good to copy the files.
-                Write-Verbose -Message "$SourcePath exists, so copying contents to $ClientPath ..."
+                Write-Verbose -Message """$SourcePath"" exists, so copying contents to ""$ClientPath"" ..."
 
                 # Set up some RoboCopy options. We have to do this here as doing it in begin will cause
                 # $RobocopyOptions to not get emptied for each copy of axiUm.
