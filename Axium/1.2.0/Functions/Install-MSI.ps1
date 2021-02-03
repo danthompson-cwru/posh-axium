@@ -176,7 +176,7 @@ function Install-MSI {
             $LogFileExists = $False
 
             if ($LogDirectoryExists) {
-                $LogFilePath = $LogDirectoryPath | Join-Path -ChildPath "$($MSIFilePath.BaseName).log"
+                $LogFilePath = $LogDirectoryPath | Join-Path -ChildPath ($MSIFilePath | Split-Path -Leaf)
 
                 $LogMessageSuffix = "for ""$MSIFilePath""."
                 $LogVerboseMessageSuffix = "Logging $LogMessageSuffix."
