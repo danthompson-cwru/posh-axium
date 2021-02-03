@@ -68,7 +68,7 @@ function Test-IPAddressInSubnet {
         $ResultVerboseMessage += " $($SubnetAddress.ToString())/$($SubnetMask.ToString())."
         Write-Verbose -Message $ResultVerboseMessage
 
-        return $InSubnet
+        $InSubnet
     }
 }
 

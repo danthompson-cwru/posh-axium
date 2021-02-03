@@ -133,7 +133,7 @@ function Set-AxiumHelpLink {
             Write-Warning -Message 'Requirements to make links not met, so not doing anything. Bye now!'
         }
 
-        # Set the System.IO.DirectoryInfo we will return.
+        # Set the System.IO.DirectoryInfo we will output.
         [System.IO.DirectoryInfo]$Link = $Null
     }
 
@@ -196,7 +196,7 @@ function Set-AxiumHelpLink {
             Write-Warning -Message "$HelpPath doesn't exist, or is not a directory. Not creating link."
         }
 
-        return $Link
+        $Link
     }
 }
 
