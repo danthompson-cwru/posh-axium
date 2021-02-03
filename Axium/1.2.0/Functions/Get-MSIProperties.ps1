@@ -108,7 +108,7 @@ function Get-MSIProperties {
                 )
             }
         } catch {
-            throw "Failed to get the properties of the MSI at $Path. The error was: $_"
+            throw "Failed to get the properties of ""$Path"". The error was: $_"
         }
 
         $Properties

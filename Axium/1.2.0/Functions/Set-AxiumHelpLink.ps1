@@ -21,8 +21,8 @@ function Set-AxiumHelpLink {
         .EXAMPLE
             PS> 'C:\axiUm' | Set-AxiumHelpLinks -HelpPathOrPrefix '\\domain\axiUm-HelpFiles'
 
-            Creates a link at `C:\axiUm\axiUm Help Files` that points to `\\domain\axiUm-HelpFiles`, if such a link
-            doesn't already exist. If `C:\axiUm\axiUm Help Files` is already a stock directory containing the help
+            Creates a link at "C:\axiUm\axiUm Help Files" that points to "\\domain\axiUm-HelpFiles", if such a link
+            doesn't already exist. If "C:\axiUm\axiUm Help Files" is already a stock directory containing the help
             files, it will be deleted and replaced with a link.
         .EXAMPLE
             PS> 'C:\axiUm' | Set-AxiumHelpLinks -HelpPathOrPrefix '\\domain\axiUm-HelpFiles' -RequireInSubnet @('10.0.0.0', '255.0.0.0') -RequireNotInSubnet @('10.2.0.0', '255.255.0.0)
@@ -38,16 +38,16 @@ function Set-AxiumHelpLink {
 
             This is an example of using the MultipleCopies switch to create links for multiple copies of axiUm.
             Let us assume there are two installations of axiUm on the workstation this is being run on:
-                * `C:\axiUm\Production`
-                * `C:\axiUm\Test`
+                * "C:\axiUm\Production"
+                * "C:\axiUm\Test"
 
             This will:
-                * Create a link at `C:\axiUm\Production\axiUm Help Files` that points to
-                `\\domain\axiUm-HelpFiles-Production`, if this link doesn't already exist. If
-                `C:\axiUm\Production\axiUm Help Files` is already a stock directory containing the help files, it
+                * Create a link at "C:\axiUm\Production\axiUm Help Files" that points to
+                "\\domain\axiUm-HelpFiles-Production", if this link doesn't already exist. If
+                "C:\axiUm\Production\axiUm Help Files" is already a stock directory containing the help files, it
                 will be deleted and replaced with a link.
-                * Create a link at `C:\axiUm\Test\axiUm Help Files` that points to `\\domain\axiUm-HelpFiles-Test`,
-                if this link doesn't already exist. If `C:\axiUm\Test\axiUm Help Files` is already a stock
+                * Create a link at "C:\axiUm\Test\axiUm Help Files" that points to "\\domain\axiUm-HelpFiles-Test",
+                if this link doesn't already exist. If "C:\axiUm\Test\axiUm Help Files" is already a stock
                 directory containing the help files, it will be deleted and replaced with a link.
 
         .NOTES
@@ -163,12 +163,12 @@ function Set-AxiumHelpLink {
                 # Check if ClientPath actually contains an installation of axiUm.
                 $AxiumExePath = $ClientPath | Join-Path -ChildPath 'axiUm.exe'
                 if ($AxiumExePath | Test-Path -PathType 'Leaf') {
-                    Write-Verbose -Message "$AxiumExePath exists, so we have a copy of axiUm."
+                    Write-Verbose -Message """$AxiumExePath"" exists, so we have a copy of axiUm."
 
                     # If the help files is already a plain, local directory, we need to recursivley delete it.
                     if (($LinkPath | Test-Path -PathType 'Container') -and
                         ($Null -eq ($LinkPath | Get-Item).LinkType)) {
-                        Write-Verbose -Message "$($LinkPath.FullName) is a plain directory. Deleting it and its contents ..."
+                        Write-Verbose -Message """$LinkPath"" is a plain directory. Deleting it and its contents ..."
 
                         if ($PSCmdlet.ShouldProcess($LinkPath, 'Delete Directory and Contents')) {
                             $LinkPath | Remove-Item -Recurse -Force
@@ -178,8 +178,8 @@ function Set-AxiumHelpLink {
                     # Create the link.
                     if ($PSCmdlet.ShouldProcess($LinkPath, 'Create Symbolic Link')) {
                         $LinkMessageSuffix = "a link with the following properties:"`
-                            + "`n`tPATH  : ""$($LinkPath.FullName)"""`
-                            + "`n`tTARGET: ""$($HelpPath.FullName)"""
+                            + "`n`tPATH  : ""$LinkPath"""`
+                            + "`n`tTARGET: ""$HelpPath"""
 
                         $Link = $LinkPath | New-Item -Value $HelpPath -ItemType 'SymbolicLink' -Force
                         if ($Null -eq $Link) {
@@ -189,11 +189,11 @@ function Set-AxiumHelpLink {
                         }
                     }
                 } else {
-                    Write-Warning -Message "$AxiumExePath doesn't exist, so we don't have a copy of axiUm. Not creating link."
+                    Write-Warning -Message """$AxiumExePath"" doesn't exist, so we don't have a copy of axiUm. Not creating link."
                 }
             }
         } else {
-            Write-Warning -Message "$HelpPath doesn't exist, or is not a directory. Not creating link."
+            Write-Warning -Message """$HelpPath"" doesn't exist, or is not a directory. Not creating link."
         }
 
         $Link

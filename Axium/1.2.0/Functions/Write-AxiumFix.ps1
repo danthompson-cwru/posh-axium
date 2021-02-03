@@ -62,13 +62,13 @@ function Write-AxiumFix {
         # Get paths.
 
         $ModulePath = $PSScriptRoot | Split-Path
-        Write-Verbose -Message "Module located at $ModulePath."
+        Write-Verbose -Message "Module located at ""$ModulePath""."
 
         $AssetsPath = $ModulePath | Join-Path -ChildPath 'Assets'
-        Write-Verbose -Message "Assets located at $AssetsPath."
+        Write-Verbose -Message "Assets located at ""$AssetsPath""."
 
         $XmlAssetsPath = $AssetsPath | Join-Path -ChildPath 'XML'
-        Write-Verbose -Message "XML assets located at $XmlAssetsPath."
+        Write-Verbose -Message "XML assets located at ""$XmlAssetsPath""."
 
         # Create a variable to determine if we were successful.
         $Success = $True
@@ -109,10 +109,10 @@ function Write-AxiumFix {
 
     process {
         $AxiumExePath = $Path | Join-Path -ChildPath 'axiUm.exe'
-        Write-Verbose -Message "axiUm.exe located at $AxiumExePath."
+        Write-Verbose -Message "axiUm.exe located at ""$AxiumExePath""."
 
         $AxiumExeConfigPath = $Path | Join-Path -ChildPath 'axiUm.exe.Config'
-        Write-Verbose -Message "axiUm.exe.Config located at $AxiumExeConfigPath."
+        Write-Verbose -Message "axiUm.exe.Config located at ""$AxiumExeConfigPath""."
 
         if ($PossibleFixes.CrystalReportsRuntime13SP26) {
             Write-Verbose -Message 'Seeing if we need to apply the fix for compatbility with Crystal Reports Runtime 13 SP26 ...'
@@ -135,7 +135,7 @@ function Write-AxiumFix {
                             $AxiumExeConfigXml.Node.Configuration.Runtime
                         )
 
-                        $ResultsMessageSuffix = "the axiUm copy at $Path compatible with Crystal Reports Runtime 13 SP26."
+                        $ResultsMessageSuffix = "the axiUm copy at ""$Path"" compatible with Crystal Reports Runtime 13 SP26."
 
                         if ($Null -eq $ReplacementResults) {
                             Write-Error -Message "Unable to make $ResultsMessageSuffix"

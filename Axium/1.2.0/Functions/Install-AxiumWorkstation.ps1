@@ -58,10 +58,10 @@ function Install-AxiumWorkstation {
     process {
         $AnswerFilePath = $Path | Join-Path -ChildPath 'Setup.iss'
         if ($AnswerFilePath | Test-Path -PathType 'Leaf') {
-            Write-Verbose -Message "Answer file found at $AnswerFilePath. Will perform silent install."
+            Write-Verbose -Message "Answer file found at ""$AnswerFilePath"". Will perform silent install."
             $StartProcessArgs.ArgumentList = '/s'
         } else {
-            Write-Verbose -Message "Answer file not found at $AnswerFilePath. Will not perform a silent install."
+            Write-Verbose -Message "Answer file not found at ""$AnswerFilePath"". Will not perform a silent install."
         }
 
         $StartProcessArgs.FilePath = $Path | Join-Path -ChildPath 'Setup.exe'

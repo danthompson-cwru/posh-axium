@@ -10,7 +10,7 @@ function Copy-AxiumFiles {
             may potentially be slow.
 
             Uses RoboCopy under the hood, so it requires RoboCopy to be located in the path, which is the case by
-            default in Windows Vista and latter. RoboCopy will log to $ClientPath\Copy-AxiumFiles.log.
+            default in Windows Vista and latter. RoboCopy will log to "$ClientPath\Copy-AxiumFiles.log".
 
             Aliases: cpaf
 
@@ -21,7 +21,7 @@ function Copy-AxiumFiles {
             PS> 'C:\axiUm' | Copy-AxiumFiles -SourcePathOrPrefix $PSScriptRoot
 
             Copies the files for a single instance of axiUm from the directory this script is in to "C:\axiUm",
-            writing a log file to C:\axiUm\Copy-AxiumFiles.log. Only new and updated files are copied, and the IP
+            writing a log file to "C:\axiUm\Copy-AxiumFiles.log". Only new and updated files are copied, and the IP
             addresses of the device are not considered.
         .EXAMPLE
             PS> 'C:\axiUm' | Copy-AxiumFiles -SourcePathOrPrefix $PSScriptRoot -CopyAll
@@ -42,14 +42,14 @@ function Copy-AxiumFiles {
 
             This is an example of using the MultipleCopies switch to copy files for multiple copies of axiUm. Let
             us assume there are two installations of axiUm on the workstation this is being run on:
-                * `C:\axiUm\Production`
-                * `C:\axiUm\Test`
+                * "C:\axiUm\Production"
+                * "C:\axiUm\Test"
             
             This will:
-                * Copy all files that are not in or newer than the ones in `C:\axiUm\Production` from
-                `\\domain\axiUm-ClientFiles-Production` to `C:\axiUm\Production`.
-                * Copy all files that are not in or newer than the ones in `C:\axiUm\Test` from
-                `\\domain\axiUm-ClientFiles-Test` to `C:\axiUm\Test`.
+                * Copy all files that are not in or newer than the ones in "C:\axiUm\Production" from
+                "\\domain\axiUm-ClientFiles-Production" to "C:\axiUm\Production".
+                * Copy all files that are not in or newer than the ones in "C:\axiUm\Test" from
+                "\\domain\axiUm-ClientFiles-Test" to "C:\axiUm\Test".
 
         .NOTES
             Author    : Dan Thompson
@@ -200,7 +200,7 @@ function Copy-AxiumFiles {
                 }
             } else {
                 # We don't.
-                Write-Warning -Message "$SourcePath doesn't exist, or is not a directory. Not copying contents to $ClientPath."
+                Write-Warning -Message "Directory ""$SourcePath"" doesn't exist. Not copying contents to ""$ClientPath""."
             }
         }
     }

@@ -237,7 +237,7 @@ function Install-MSI {
                 $True
             }
         } else {
-            $ExistsMessage = "The product in $MSIFilePath is already installed. Not installing."
+            $ExistsMessage = "The product in ""$MSIFilePath"" is already installed. Not installing."
             
             if ($SuccessOnExists.IsPresent) {
                 Write-Verbose -Message $ExistsMessage
