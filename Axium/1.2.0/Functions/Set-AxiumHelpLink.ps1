@@ -13,7 +13,7 @@ function Set-AxiumHelpLink {
             Aliases: sahl
 
         .INPUTS
-            string
+            System.String
 
         .OUTPUTS
             System.IO.DirectoryInfo

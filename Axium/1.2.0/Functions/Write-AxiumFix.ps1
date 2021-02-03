@@ -8,7 +8,7 @@ function Write-AxiumFix {
             verions less than 7.06 work with Crystal Reports Runtime 13 SP26.
 
         .INPUTS
-            string
+            System.String
 
         .OUTPUTS
             System.Boolean

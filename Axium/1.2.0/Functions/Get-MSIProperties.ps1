@@ -9,7 +9,7 @@ function Get-MSIProperties {
             Aliases: gmp
 
         .INPUTS
-            string
+            System.String
 
         .OUTPUTS
             hashtable

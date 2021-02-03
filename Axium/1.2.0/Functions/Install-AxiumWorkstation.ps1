@@ -15,7 +15,7 @@ function Install-AxiumWorkstation {
             Aliases: Install-AxiumWS, isaws
 
         .INPUTS
-            string
+            System.String
 
         .OUTPUTS
             System.Boolean

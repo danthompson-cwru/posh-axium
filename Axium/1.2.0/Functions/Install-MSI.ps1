@@ -10,7 +10,7 @@ function Install-MSI {
             Aliases: ismsi
 
         .INPUTS
-            string
+            System.String
 
         .OUTPUTS
             System.Boolean

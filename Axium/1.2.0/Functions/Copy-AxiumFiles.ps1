@@ -15,7 +15,7 @@ function Copy-AxiumFiles {
             Aliases: cpaf
 
         .INPUTS
-            string
+            System.String
 
         .EXAMPLE
             PS> 'C:\axiUm' | Copy-AxiumFiles -SourcePathOrPrefix $PSScriptRoot
