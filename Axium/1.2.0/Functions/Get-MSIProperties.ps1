@@ -108,7 +108,7 @@ function Get-MSIProperties {
                 )
             }
         } catch {
-            throw "Failed to get the properties of ""$Path"". The error was: $_"
+            Write-Error -Message "Failed to get the properties of ""$Path"". The error was: $_"
         }
 
         $Properties
