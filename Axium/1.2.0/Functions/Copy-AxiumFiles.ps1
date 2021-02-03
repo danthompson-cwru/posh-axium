@@ -18,17 +18,17 @@ function Copy-AxiumFiles {
             string
 
         .EXAMPLE
-            PS> Copy-AxiumFiles -ClientPath 'C:\axiUm' -SourcePathOrPrefix $PSScriptRoot
+            PS> 'C:\axiUm' | Copy-AxiumFiles -SourcePathOrPrefix $PSScriptRoot
 
             Copies the files for a single instance of axiUm from the directory this script is in to "C:\axiUm",
             writing a log file to C:\axiUm\Copy-AxiumFiles.log. Only new and updated files are copied, and the IP
             addresses of the device are not considered.
         .EXAMPLE
-            PS> Copy-AxiumFiles -ClientPath 'C:\axiUm' -SourcePathOrPrefix $PSScriptRoot -CopyAll
+            PS> 'C:\axiUm' | Copy-AxiumFiles -SourcePathOrPrefix $PSScriptRoot -CopyAll
 
             Same as Example 1, but copies all files.
         .EXAMPLE
-            PS> Copy-AxiumFiles -ClientPath 'C:\axiUm' -SourcePathOrPrefix $PSScriptRoot -RequireInSubnet @('10.0.0.0', '255.0.0.0') -RequireNotInSubnet @('10.2.0.0', '255.255.0.0)
+            PS> 'C:\axiUm' | Copy-AxiumFiles -SourcePathOrPrefix $PSScriptRoot -RequireInSubnet @('10.0.0.0', '255.0.0.0') -RequireNotInSubnet @('10.2.0.0', '255.255.0.0)
 
             Let us say that your organization has IP addresses in 10.0.0.0/255.0.0.0, but your VPN uses a small
             part of that (10.1.0.0/255.255.0.0). This would do the same as Example 1, but only if the workstation
@@ -38,7 +38,7 @@ function Copy-AxiumFiles {
             is connected via a slow offsite wifi connection to your VPN. This would skip those workstations, which
             you could then handle manually.
         .EXAMPLE
-            PS> Get-ChildItem -Path 'C:\axiUm' -Directory | Copy-AxiumFiles -SourcePathOrPrefix '\\domain\axiUm-ClientFiles-' -MultipleCopies
+            PS> 'C:\axiUm' | Get-ChildItem -Directory | Copy-AxiumFiles -SourcePathOrPrefix '\\domain\axiUm-ClientFiles-' -MultipleCopies
 
             This is an example of using the MultipleCopies switch to copy files for multiple copies of axiUm. Let
             us assume there are two installations of axiUm on the workstation this is being run on:
@@ -166,13 +166,13 @@ function Copy-AxiumFiles {
             # of axiUm.
             $SourcePath = $SourcePathOrPrefix
             if ($MultipleCopies.IsPresent) {
-                $SourcePath = $SourcePathOrPrefix + $(Split-Path -Path $ClientPath -Leaf)
+                $SourcePath = $SourcePathOrPrefix + $($ClientPath | Split-Path -Leaf)
             }
 
             # Check if we have source files for the copy of axiUm.
             $HaveSourceFiles = $True
             if ($MultipleCopies.IsPresent) {
-                $HaveSourceFiles = Test-Path -Path $SourcePath -PathType 'Container'
+                $HaveSourceFiles = $SourcePath | Test-Path -PathType 'Container'
             }
 
             if ($HaveSourceFiles) {
@@ -187,7 +187,7 @@ function Copy-AxiumFiles {
                     $RobocopyOptions += '/XO'
                 }
 
-                $LogPath = Join-Path -Path $ClientPath -ChildPath 'Copy-AxiumFiles.log'
+                $LogPath = $ClientPath | Join-Path -ChildPath 'Copy-AxiumFiles.log'
 
                 $RobocopyLogFlag = '/UNILOG'
                 if ($AppendToLog.IsPresent) {

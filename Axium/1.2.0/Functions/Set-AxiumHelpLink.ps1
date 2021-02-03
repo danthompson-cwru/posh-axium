@@ -19,13 +19,13 @@ function Set-AxiumHelpLink {
             System.IO.DirectoryInfo
 
         .EXAMPLE
-            PS> Set-AxiumHelpLinks -ClientPath 'C:\axiUm' -HelpPathOrPrefix '\\domain\axiUm-HelpFiles'
+            PS> 'C:\axiUm' | Set-AxiumHelpLinks -HelpPathOrPrefix '\\domain\axiUm-HelpFiles'
 
             Creates a link at `C:\axiUm\axiUm Help Files` that points to `\\domain\axiUm-HelpFiles`, if such a link
             doesn't already exist. If `C:\axiUm\axiUm Help Files` is already a stock directory containing the help
             files, it will be deleted and replaced with a link.
         .EXAMPLE
-            PS> Set-AxiumHelpLinks -ClientPath 'C:\axiUm' -HelpPathOrPrefix '\\domain\axiUm-HelpFiles' -RequireInSubnet @('10.0.0.0', '255.0.0.0') -RequireNotInSubnet @('10.2.0.0', '255.255.0.0)
+            PS> 'C:\axiUm' | Set-AxiumHelpLinks -HelpPathOrPrefix '\\domain\axiUm-HelpFiles' -RequireInSubnet @('10.0.0.0', '255.0.0.0') -RequireNotInSubnet @('10.2.0.0', '255.255.0.0)
 
             Let us say that your organization has IP addresses in 10.0.0.0/255.0.0.0, but your VPN uses a small
             part of that (10.1.0.0/255.255.0.0). This would do the same as Example 1, but only if the workstation
@@ -34,7 +34,7 @@ function Set-AxiumHelpLink {
             This is useful if you are worried about breaking somebody's connection to the help files when they are
             on a slow, off-site Wi-Fi connection.
         .EXAMPLE
-            PS> Get-ChildItem -Path 'C:\axiUm' -Directory | Set-AxiumHelpLinks -HelpPathOrPrefix '\\domain\axiUm-HelpFiles-' -MultipleCopies
+            PS> 'C:\axiUm' | Get-ChildItem -Directory | Set-AxiumHelpLinks -HelpPathOrPrefix '\\domain\axiUm-HelpFiles-' -MultipleCopies
 
             This is an example of using the MultipleCopies switch to create links for multiple copies of axiUm.
             Let us assume there are two installations of axiUm on the workstation this is being run on:
@@ -148,13 +148,13 @@ function Set-AxiumHelpLink {
         # of axiUm.
         $HelpPath = $HelpPathOrPrefix
         if ($MultipleCopies.IsPresent) {
-            $HelpPath = $HelpPathOrPrefix + $(Split-Path -Path $ClientPath -Leaf)
+            $HelpPath = $HelpPathOrPrefix + $($ClientPath | Split-Path -Leaf)
         }
 
         # Check if we have help files for this copy of axiUm.
         $HaveHelpFiles = $True
         if ($MultipleCopies.IsPresent) {
-            $HaveHelpFiles = Test-Path -Path $HelpPath -PathType 'Container'
+            $HaveHelpFiles = $HelpPath | Test-Path -PathType 'Container'
         }
 
         if ($HaveHelpFiles) {
@@ -162,22 +162,22 @@ function Set-AxiumHelpLink {
             Write-Verbose -Message "$HelpPath exists, so creating link ..."
 
             # Set the path to the link before we make any changes.
-            $LinkPath = Join-Path -Path $ClientPath -ChildPath 'axiUm Help Files'
+            $LinkPath = $ClientPath | Join-Path -ChildPath 'axiUm Help Files'
 
             # Make the link if we meet the requirements.
             if ($CanMakeLink) {
                 # Check if ClientPath actually contains an installation of axiUm.
-                $AxiumExePath = Join-Path -Path $ClientPath -ChildPath 'axiUm.exe'
-                if (Test-Path -Path $AxiumExePath -PathType 'Leaf') {
+                $AxiumExePath = $ClientPath | Join-Path -ChildPath 'axiUm.exe'
+                if ($AxiumExePath | Test-Path -PathType 'Leaf') {
                     Write-Verbose -Message "$AxiumExePath exists, so we have a copy of axiUm."
 
                     # If the help files is already a plain, local directory, we need to recursivley delete it.
-                    if ((Test-Path -Path $LinkPath -PathType 'Container') -and
-                        ($Null -eq (Get-Item -Path $LinkPath).LinkType)) {
+                    if (($LinkPath | Test-Path -PathType 'Container') -and
+                        ($Null -eq ($LinkPath | Get-Item).LinkType)) {
                         Write-Verbose -Message "$($LinkPath.FullName) is a plain directory. Deleting it and its contents ..."
 
                         if ($PSCmdlet.ShouldProcess($LinkPath, 'Delete Directory and Contents')) {
-                            Remove-Item -Path $LinkPath -Recurse -Force
+                            $LinkPath | Remove-Item -Recurse -Force
                         }
                     }
 
@@ -187,7 +187,7 @@ function Set-AxiumHelpLink {
                             + "`n`tPATH  : ""$($LinkPath.FullName)"""`
                             + "`n`tTARGET: ""$($HelpPath.FullName)"""
 
-                        $Link = New-Item -Path $LinkPath -Value $HelpPath -ItemType 'SymbolicLink' -Force
+                        $Link = $LinkPath | New-Item -Value $HelpPath -ItemType 'SymbolicLink' -Force
                         if ($Null -eq $Link) {
                             Write-Error -Message "Failed to create $LinkMessageSuffix"
                         } else {

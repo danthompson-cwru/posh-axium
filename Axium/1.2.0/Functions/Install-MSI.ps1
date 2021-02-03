@@ -101,14 +101,14 @@ function Install-MSI {
         if ([string]::IsNullOrWhiteSpace($LogDirectoryPath)) {
             Write-Verbose -Message 'MSI logging not enabled.'
         } else {
-            if (Test-Path -Path $LogDirectoryPath) {
+            if ($LogDirectoryPath | Test-Path) {
                 Write-Verbose -Message """$LogDirectoryPath"" already exists, so not creating it."
 
                 $LogDirectoryExists = $True
             } else {
                 Write-Verbose -Message """$LogDirectoryPath"" doesn't exist, so creating it ..."
 
-                if ($Null -eq (New-Item -Path $LogDirectoryPath -ItemType 'Directory')) {
+                if ($Null -eq ($LogDirectoryPath | New-Item -ItemType 'Directory')) {
                     Write-Error -Message "Failed to create ""$LogDirectoryPath"". MSI logging will not be done."
                 } else {
                     Write-Verbose -Message "Successfully created ""$LogDirectoryPath""."
@@ -176,14 +176,14 @@ function Install-MSI {
             $LogFileExists = $False
 
             if ($LogDirectoryExists) {
-                $LogFilePath = Join-Path -Path $LogDirectoryPath -ChildPath "$($MSIFilePath.BaseName).log"
+                $LogFilePath = $LogDirectoryPath | Join-Path -ChildPath "$($MSIFilePath.BaseName).log"
 
                 $LogMessageSuffix = "for ""$MSIFilePath""."
                 $LogVerboseMessageSuffix = "Logging $LogMessageSuffix."
                 $LogErrorMessageSuffix = "Not logging $LogMessageSuffix."
 
-                if (Test-Path -Path $LogFilePath) {
-                    if (-not (Test-Path -Path $LogFilePath -PathType 'Leaf')) {
+                if ($LogFilePath | Test-Path) {
+                    if (-not ($LogFilePath | Test-Path -PathType 'Leaf')) {
                         Write-Error -Message """$LogFilePath"" is not a file. $LogErrorMessageSuffix"
                     } else {
                         Write-Verbose -Message """$LogFilePath"" exists and is a file. $LogVerboseMessageSuffix"
@@ -193,7 +193,7 @@ function Install-MSI {
                 } else {
                     Write-Verbose """$LogFilePath"" doesn't exist. Attempting to create it ..."
 
-                    if ($Null -eq (New-Item -Path $LogFilePath -ItemType 'File')) {
+                    if ($Null -eq ($LogFilePath | New-Item -ItemType 'File')) {
                         Write-Error -Message "Unable to create ""$LogFilePath"". $LogErrorMessageSuffix"
                     } else {
                         Write-Verbose -Message "Successfully created ""$LogFilePath"". $LogVerboseMessageSuffix"

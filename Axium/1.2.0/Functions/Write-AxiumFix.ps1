@@ -127,10 +127,8 @@ function Write-AxiumFix {
                     Write-Verbose -Message 'Crystal Reports Runtime 13 SP26 is installed.'
 
                     if ($PSCmdlet.ShouldProcess($AxiumExeConfigPath, 'apply fix')) {
-                        $AxiumExeConfigXml = Select-Xml -Path $AxiumExeConfigPath -XPath '/'
-                        $RuntimeXml = Select-Xml -Path (
-                            $XmlAssetsPath | Join-Path -ChildPath 'CRR13SP26FixRuntime.xml'
-                        ) -XPath '/'
+                        $AxiumExeConfigXml = $AxiumExeConfigPath | Get-Item | Select-Xml -XPath '/'
+                        $RuntimeXml = $XmlAssetsPath | Join-Path -ChildPath 'CRR13SP26FixRuntime.xml' | Get-Item | Select-Xml -XPath '/'
 
                         $ReplacementResults = $AxiumExeConfigXml.Node.Configuration.ReplaceChild(
                             $AxiumExeConfigXml.Node.ImportNode($RuntimeXml.Node.DocumentElement, $True),
