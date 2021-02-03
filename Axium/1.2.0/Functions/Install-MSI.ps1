@@ -230,7 +230,7 @@ function Install-MSI {
                     Write-Verbose -Message "Successfully ran: $RunMessageSuffix"
                     $True
                 } else {
-                    throw "Encountered error code $($MSIExecProcess.ExitCode) when running: $RunMessageSuffix"
+                    Write-Error -Message "Encountered error code $($MSIExecProcess.ExitCode) when running: $RunMessageSuffix"
                     $False
                 }
             } else {
