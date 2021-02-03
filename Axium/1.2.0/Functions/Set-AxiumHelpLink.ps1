@@ -71,13 +71,7 @@ function Set-AxiumHelpLink {
         )]
         [Alias('clp')]
         [ValidateNotNullOrEmpty()]
-        [ValidateScript({
-            if (-not ($_ | Test-Path)) {
-                throw "Directory $_ doesn't exist."
-            }
-
-            return $True
-        })]
+        [ValidateScript({ $_ | Test-Path -PathType 'Container' })]
         [string]$ClientPath,
 
         # If MultipleCopies is set, the name of the last folder in ClientPath will be appended to HelpPathOrPrefix

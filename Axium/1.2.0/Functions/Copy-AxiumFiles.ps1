@@ -69,13 +69,7 @@ function Copy-AxiumFiles {
             Mandatory = $True
         )]
         [ValidateNotNullOrEmpty()]
-        [ValidateScript({
-            if (-not ($_ | Test-Path -PathType 'Container')) {
-                throw "Directory $_ doesn't exist."
-            }
-
-            $True
-        })]
+        [ValidateScript({ $_ | Test-Path -PathType 'Container' })]
         [Alias('clp')]
         [string]$ClientPath,
 
