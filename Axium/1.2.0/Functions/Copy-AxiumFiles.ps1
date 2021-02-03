@@ -201,13 +201,17 @@ function Copy-AxiumFiles {
                     Write-Verbose -Message "Attempting to run: $RunMessageSuffix"
     
                     $RobocopyProcess = Start-Process -FilePath 'robocopy' -ArgumentList $RobocopyArgs -Wait -PassThru
+
+                    $ExitCodeMessage = "Exit code was $($RobocopyProcess.ExitCode). See https://docs.microsoft.com/en-us/troubleshoot/windows-server/backup-and-storage/return-codes-used-robocopy-utility for details."
     
-                    if ($RobocopyProcess.ExitCode -eq 0) {
-                        Write-Verbose -Message "Successfully ran: $RunMessageSuffix"
-                        $True
-                    } else {
-                        Write-Error -Message "Encountered error code $($RobocopyProcess.ExitCode) when running: $RunMessageSuffix"
+                    if ($RobocopyProcess.ExitCode -gt 7) {
+                        Write-Error -Message "Encountered error when running: $RunMessageSuffix"
+                        Write-Error -Message $ExitCodeMessage
                         $False
+                    } else {
+                        Write-Verbose -Message "Successfully ran: $RunMessageSuffix"
+                        Write-Verbose -Message $ExitCodeMessage
+                        $True
                     }
                 } else {
                     $True
