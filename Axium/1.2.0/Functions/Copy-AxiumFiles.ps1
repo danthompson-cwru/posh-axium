@@ -160,7 +160,7 @@ function Copy-AxiumFiles {
             # of axiUm.
             $SourcePath = $SourcePathOrPrefix
             if ($MultipleCopies.IsPresent) {
-                $SourcePath = $SourcePathOrPrefix + $($ClientPath | Split-Path -Leaf)
+                $SourcePath = $SourcePathOrPrefix | Join-Path -ChildPath ($ClientPath | Split-Path -Leaf)
             }
 
             # Check if we have source files for the copy of axiUm.

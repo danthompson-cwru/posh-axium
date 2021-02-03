@@ -142,7 +142,7 @@ function Set-AxiumHelpLink {
         # of axiUm.
         $HelpPath = $HelpPathOrPrefix
         if ($MultipleCopies.IsPresent) {
-            $HelpPath = $HelpPathOrPrefix + $($ClientPath | Split-Path -Leaf)
+            $HelpPath = $HelpPathOrPrefix | Join-Path -ChildPath ($ClientPath | Split-Path -Leaf)
         }
 
         # Check if we have help files for this copy of axiUm.
