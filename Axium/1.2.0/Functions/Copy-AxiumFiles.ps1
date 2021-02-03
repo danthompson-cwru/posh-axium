@@ -195,8 +195,22 @@ function Copy-AxiumFiles {
 
                 $RobocopyArgs = @($SourcePath, $ClientPath) + $RobocopyOptions
 
-                if ($PSCmdlet.ShouldProcess("robocopy.exe $RobocopyArgs", 'Run')) {
-                    & robocopy.exe $RobocopyArgs
+                if ($PSCmdlet.ShouldProcess('robocopy', 'Start-Process')) {
+                    $RunMessageSuffix = "robocopy $RobocopyArgs"
+    
+                    Write-Verbose -Message "Attempting to run: $RunMessageSuffix"
+    
+                    $RobocopyProcess = Start-Process -FilePath 'robocopy' -ArgumentList $RobocopyArgs -Wait -PassThru
+    
+                    if ($RobocopyProcess.ExitCode -eq 0) {
+                        Write-Verbose -Message "Successfully ran: $RunMessageSuffix"
+                        $True
+                    } else {
+                        Write-Error -Message "Encountered error code $($RobocopyProcess.ExitCode) when running: $RunMessageSuffix"
+                        $False
+                    }
+                } else {
+                    $True
                 }
             } else {
                 # We don't.
