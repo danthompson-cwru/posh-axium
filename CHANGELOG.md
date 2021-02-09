@@ -26,3 +26,4 @@
 
   # Version 1.3.0
   * Added the ability to pass public properties to `Install-MSI`.
+  * Fixed some documentation bugs.
