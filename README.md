@@ -53,18 +53,19 @@ There are multiple ways to do this, but here is one way that works for an Active
 # Usage
 See the comment based help for the functions provided by the module.
 
-The following deal directly with axiUm, and are what you will probably want to call directly:
-Full Name           | Alias
-------------------- | -----
-`Copy-AxiumFiles`   | `cpaf`
-`Set-AxiumHelpLink` | `sahl`
+You will probably want to call the following functions directly:
+* `Get-InstalledProduct`
+* `Copy-AxiumFiles`
+* `Set-AxiumHelpLink`
+* `Install-MSI`
+* `Install-AxiumWorkstation`
+* `Write-AxiumFix`
 
-The following are used by the functions related directly to axiUm. You usually don't need to call them directly:
-Full Name                       | Alias
-------------------------------- | -----
-`Get-IPAddresses`               | `gia`
-`Test-IPAddressInSubnet`        | `tias`
-`Test-IPAddressRequirementsMet` | `tiarm`
+The following are used mainly by other functions, and usually don't need to be called directly:
+* `Get-IPAddresses`
+* `Get-MSIProperties`
+* `Test-IPAddressInSubnet`
+* `Test-IPAddressRequirementsMet`
 
 # Support
 Support (including bug fixes and new features) as my time allows. Please use the [click here](https://github.com/danthompson-cwru/posh-axium/issues) to report issues.
