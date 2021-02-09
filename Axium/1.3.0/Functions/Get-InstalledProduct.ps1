@@ -7,7 +7,7 @@ function Get-InstalledProduct {
             Gets a table of information on the installed products. Each column is one of the possible properties
             for an installed product on Windows that is also in $Properties.
             
-            Aliases: gip
+            Aliases: gip, Get-InstalledApp, Get-InstalledApplication, Get-InstalledProgram, Get-InstalledSoftware
 
         .INPUTS
             System.String[]
