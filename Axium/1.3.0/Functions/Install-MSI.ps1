@@ -83,7 +83,14 @@ function Install-MSI {
         #
         # Aliases: soe
         [Alias('soe')]
-        [switch]$SuccessOnExists
+        [switch]$SuccessOnExists,
+
+        # Public properties to pass to the MSI.
+        #
+        # Aliases: ap
+        [Alias('pp')]
+        [ValidateNotNullOrEmpty()]
+        [string]$PublicProperties
     )
 
     begin {
@@ -217,6 +224,10 @@ function Install-MSI {
 
             if ($LogFileExists) {
                 $ArgumentList += "/log ""$LogFilePath"""
+            }
+
+            if ($Null -ne $PublicProperties) {
+                $ArgumentList += $PublicProperties
             }
 
             if ($PSCmdlet.ShouldProcess('msiexec', 'Start-Process')) {
