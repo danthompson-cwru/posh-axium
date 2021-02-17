@@ -24,6 +24,9 @@
   * Allows for more detailed output on the result of running the command.
   * Is more consistent with how things are done in `Install-MSI`.
 
-  # Version 1.3.0
-  * Added the ability to pass public properties to `Install-MSI`.
-  * Fixed some documentation bugs.
+# Version 1.3.0
+* Added the ability to pass public properties to `Install-MSI`.
+* Fixed some documentation bugs.
+
+# Version 1.3.1
+* Fixed a bug where the path to the source files was not calculated correctly if `MultipleCopies` was set on `Copy-AxiumFiles`.
