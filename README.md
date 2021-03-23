@@ -60,6 +60,7 @@ You will probably want to call the following functions directly:
 * `Install-MSI`
 * `Install-AxiumWorkstation`
 * `Write-AxiumFix`
+* `Test-AxiumCopy`
 
 The following are used mainly by other functions, and usually don't need to be called directly:
 * `Get-IPAddresses`
