@@ -30,3 +30,5 @@
 
 # Version 1.3.1
 * Fixed a bug where the path to the source files was not calculated correctly if `MultipleCopies` was set on `Copy-AxiumFiles`.
+
+# Version 1.4.0
