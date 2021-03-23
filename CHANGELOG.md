@@ -35,4 +35,4 @@
 * Added ability to check if a copy of axiUm is installed in a given folder. Fixes issue #28.
 
 # Version 1.4.1
-
+* Added missing documentation for `Test-AxiumCopy` to `README.MD`. Fixes issue #29.
