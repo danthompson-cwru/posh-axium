@@ -33,3 +33,6 @@
 
 # Version 1.4.0
 * Added ability to check if a copy of axiUm is installed in a given folder. Fixes issue #28.
+
+# Version 1.4.1
+
