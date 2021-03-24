@@ -61,6 +61,7 @@ You will probably want to call the following functions directly:
 * `Install-AxiumWorkstation`
 * `Write-AxiumFix`
 * `Test-AxiumCopy`
+* `New-AxiumSubfolder`
 
 The following are used mainly by other functions, and usually don't need to be called directly:
 * `Get-IPAddresses`
