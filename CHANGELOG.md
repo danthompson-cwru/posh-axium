@@ -36,3 +36,6 @@
 
 # Version 1.4.1
 * Added missing documentation for `Test-AxiumCopy` to `README.MD`. Fixes issue #29.
+
+# Version 1.5.0
+
