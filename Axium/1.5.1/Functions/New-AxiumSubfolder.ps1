@@ -48,7 +48,7 @@ function New-AxiumSubfolder {
 
         if ($Path | Test-AxiumCopy -Verbose:$VerbosePreference) {
             Write-Verbose -Message """$Path"" contains a copy of axiUm."
-            $Output = New-Item -Path $Path -Name $Name -Verbose:$VerbosePreference -WhatIf:$WhatIfPreference
+            $Output = New-Item -Path $Path -Name $Name -ItemType 'Directory' -Verbose:$VerbosePreference -WhatIf:$WhatIfPreference
         } else {
             Write-Verbose -Message """$Path doesn't contain a copy of axiUm. Nothing to do."
         }

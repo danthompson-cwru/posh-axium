@@ -39,3 +39,6 @@
 
 # Version 1.5.0
 * Added `New-AxiumSubfolder`. Fixes issue #30.
+
+# Version 1.5.1
+* Fixed a bug with `New-AxiumSubfolder`. Fixes issue #32.
